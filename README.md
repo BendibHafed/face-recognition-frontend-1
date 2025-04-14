@@ -40,3 +40,4 @@ calculateFaceLocation = (data) => {
     bottomRow: height - (face.bottom_row * height)
   };
 }
+to be continued...
