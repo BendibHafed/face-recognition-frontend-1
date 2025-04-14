@@ -10,56 +10,40 @@ import ParticlesBg from 'particles-bg'
 import './App.css'
 
 
-const returnClarifaiJSONRequestOptions = (imageUrl) => {
-  const PAT = '252ed517949f435fa5d36d42fe0db88f';
-  const USER_ID = 's07ct5ryuzbx';
-  const APP_ID = 'face-recognition-app';
-
-  // Change these to whatever model and image URL you want to use
-  const MODEL_ID = 'face-detection';
-  //const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';    
-  const IMAGE_URL = imageUrl;
-
-  const raw = JSON.stringify({
-    "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-    },
-    "inputs": [
-        {
-            "data": {
-                "image": {
-                    "url": IMAGE_URL
-                }
-            }
-        }
-    ]
-});
-
-  const requestOptions = {
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Key ' + PAT
-      },
-      body: raw
-  };
-
-  return requestOptions;  
-  }
-
+const initialState  = {
+    input: '',
+    imageUrl: '', 
+    box: {},
+    route: 'signin',
+    isSignedIn: false,
+    user : {
+      email: '',
+      id: '',
+      name: '',
+      entries: 0,
+      joined: ''
+    }
+}
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '', 
-      box: {},
-      route: 'signin',
-      isSignedIn: false
-    }
+    this.state = initialState;
   }
+
+  loadUser = (data) => {
+    this.setState(
+      {
+        user: 
+        {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          entries: data.entries,
+          joined: data.joined
+        }  
+     })
+    }
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -80,34 +64,54 @@ class App extends Component {
   }
 
   onInputChange = (event) => {
-    this.setState({input: event.target.value});
+    this.setState({ input: event.target.value });
   }
 
-  onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input});
-
-      // Use the proxy URL (/clarifai) instead of direct API call (Just for Devlopment)
-    fetch("/clarifai/v2/models/" + 'face-detection' + "/outputs", returnClarifaiJSONRequestOptions(this.state.input))
-      .then(response => response.json())
-      .then(response => { this.displayFaceBox(this.calculateFaceLocation(response));
-        if (response) {
-          fetch('http://localhost:5173/face-recognition-fullstack-1', {
-            method: 'put',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ id: this.state.user?.id }),
-          })
-          .then(response => response.json())
-          .catch(err => console.log('Backend error:', err));
-        }
+  onPictureSubmit = () => {
+    this.setState({ imageUrl: this.state.input });
+    
+    fetch('http://localhost:3000/image', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id: this.state.user.id,
+        imageUrl: this.state.input
       })
-      .catch(error => console.log('error', error));
-  };
+    })
+      .then(response => {
+        if (!response.ok) {
+          // Return a rejected promise to trigger catch
+          return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (!data.faceData) {
+          throw new Error('No face data received from server');
+        }
+        
+        this.displayFaceBox(this.calculateFaceLocation({ outputs: [data.faceData] }));
+        
+        this.setState(prevState => ({
+          user: {
+            ...prevState.user,
+            entries: data.entries
+          }
+        }));
+        return true; // Explicit return for async operations
+      })
+      .catch(err => {
+        console.error("API Error:", err);
+        this.setState({ error: err.message });
+        return false; // Explicit return for async operations
+      });
+    };
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState);
     } else if (route === 'home') {
-      this.setState({isSignedIn: true})
+      this.setState({isSignedIn: true});
     } 
     this.setState({route: route});
   }
@@ -116,22 +120,22 @@ class App extends Component {
     const { imageUrl, box, route, isSignedIn } = this.state;
     return (
       <div className="App">
-        <ParticlesBg type="cobweb" bg={true} num={100} color="#ffff63"/> {/* "color","ball","lines","thick","circle","cobweb","polygon","square","tadpole","fountain","random","custom" */}
+        <ParticlesBg type="cobweb" bg={true} num={300} color="#dfe7ed"/> {/* "color","ball","lines","thick","circle","cobweb","polygon","square","tadpole","fountain","random","custom" */}
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
         { route === 'home'
         ? <div>
             <Logo />
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries}/>
             <ImageLinkForm 
               onInputChange={this.onInputChange} 
-              onButtonSubmit={ this.onButtonSubmit }/>
+              onPictureSubmit={ this.onPictureSubmit }/>
             <FaceRecognition box={box} imageUrl={imageUrl}
             />
           </div>
         : (
           route === 'signin'
-          ? <Signin onRouteChange={this.onRouteChange}/>
-          : <Register onRouteChange={this.onRouteChange}/>
+          ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+          : <Register loadUser={this.loadUser}  onRouteChange={this.onRouteChange}/>
         )
         }
       </div>
