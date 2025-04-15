@@ -10,7 +10,7 @@ class Signin extends React.Component {
         }
     }
 
-    onSubmitSgnIn = () => {
+    onSubmitSignIn = () => {
         fetch('http://localhost:3000/signin', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -64,7 +64,7 @@ class Signin extends React.Component {
                     </fieldset>
                     <div className="">
                         <input 
-                            onClick={this.onSubmitSgnIn}
+                            onClick={this.onSubmitSignIn}
                             className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
                             type="submit" 
                             value="Sign-in" />
