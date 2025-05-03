@@ -1,6 +1,6 @@
 {
-  "name": "face-recognition-fullstack-1",
-  "homepage": "https://BendibHafed.github.io/face-recognition-fullstack-1",
+  "name": "face-recognition-frontend",
+  "homepage": "https://BendibHafed.github.io/face-recognition-frontend",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "react-dom": "^19.0.0",
     "react-parallax-tilt": "^1.7.289",
     "react-router-dom": "^7.5.0",
+    "serve": "^14.2.4",
     "tachyons": "^4.12.0"
   },
   "devDependencies": {
