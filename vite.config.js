@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/face-recognition-frontend",
+  base: "/face-recognition-frontend-1",
   server: {
     proxy: {
       '/clarifai': {  // 👈 Requests starting with `/clarifai` will be proxied

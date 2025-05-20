@@ -1,6 +1,6 @@
 {
-  "name": "face-recognition-frontend",
-  "homepage": "https://BendibHafed.github.io/face-recognition-frontend",
+  "name": "face-recognition-frontend-1",
+  "homepage": "https://BendibHafed.github.io/face-recognition-frontend-1",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
