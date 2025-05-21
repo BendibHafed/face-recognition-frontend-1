@@ -22,8 +22,7 @@
     "react-parallax-tilt": "^1.7.289",
     "react-router-dom": "^7.5.0",
     "serve": "^14.2.4",
-    "tachyons": "^4.12.0", 
-    "node-fetch": "11.2.0"
+    "tachyons": "^4.12.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.27.2",
