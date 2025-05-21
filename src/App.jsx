@@ -74,7 +74,7 @@ class App extends Component {
   onPictureSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     
-    fetch('http://localhost:3000/image', {
+    fetch(`${import.meta.env.VITE_API_URL}/image`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({
