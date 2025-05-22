@@ -26,4 +26,4 @@ jobs:
         run: npm test -- --watchAll=false
 
       - name: Run ESLint
-        run: npx eslint src/
+        run: npx eslint src/ tests/
