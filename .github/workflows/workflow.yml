@@ -24,3 +24,6 @@ jobs:
 
       - name: Run tests
         run: npm test -- --watchAll=false
+
+      - name: Run ESLint
+        run: npm run lint
