@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from '../src/App.jsx';
 
+jest.mock('particles-bg', () => () => <div data-testid="particles-bg" />);
 jest.mock('../src/components/Navigation/Navigation.jsx', () => (props) => (
   <div>
     Navigation - SignedIn: {props.isSignedIn ? 'Yes' : 'No'}

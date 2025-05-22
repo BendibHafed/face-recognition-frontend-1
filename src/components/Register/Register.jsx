@@ -1,4 +1,5 @@
 import React from "react";
+import { API_URL } from "../../config";
 
 class Register extends React.Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class Register extends React.Component {
     };
 
     onSubmissionRegister = () => {
-        fetch(`${import.meta.env.VITE_API_URL}/register`, {
+        fetch(`${API_URL}/register`, {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

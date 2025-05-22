@@ -8,6 +8,7 @@ import Signin from './components/Signin/Signin.jsx';
 import Register from './components/Register/Register.jsx';
 import ParticlesBg from 'particles-bg'
 import './App.css'
+import {  API_URL } from './config'
 
 
 const initialState  = {
@@ -74,7 +75,7 @@ class App extends Component {
   onPictureSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     
-    fetch(`${import.meta.env.VITE_API_URL}/image`, {
+    fetch(`${API_URL}/image`, {
       method: 'post',
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({
