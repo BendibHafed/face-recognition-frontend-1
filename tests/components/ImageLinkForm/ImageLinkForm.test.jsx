@@ -1,4 +1,4 @@
-/* global describe, test, expect, beforeEach, afterEach, jest */
+/* global describe, test, expect, jest */
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
